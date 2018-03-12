@@ -41,12 +41,13 @@ namespace OpticalRhythm.Visuals
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
+
+            // Create matrix in this order to ensure it matches properly
             Matrix4x4 t = Matrix4x4.Translate(transform.localPosition);
             Matrix4x4 r = Matrix4x4.Rotate(transform.rotation);
             Matrix4x4 offset = Matrix4x4.Translate(GetFinalOffset());
-
-            Matrix4x4 m = Matrix4x4.TRS(transform.position + GetFinalOffset(), transform.rotation, transform.lossyScale);
             Gizmos.matrix = t * r * offset;
+
             Gizmos.DrawWireCube(Vector3.zero, new Vector3(Width, Height, 0.01f));
             
         }
