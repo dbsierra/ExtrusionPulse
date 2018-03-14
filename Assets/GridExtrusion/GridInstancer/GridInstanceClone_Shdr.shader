@@ -1,6 +1,13 @@
 ﻿Shader "Custom/GridInstanceClone" {
     Properties {
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
+        _MetalMap ("Metal Map", 2D) = "white" {}
+        _NormalMap("Normal Map", 2D) = "white" {}
+
+        _EmissionColorBottom ("Color Bottom", Color)=(0,0,0)
+        _EmissionColorTop ("Color Top", Color)=(1,1,1)
+
+        _NormalMag("Normal", Range(0,1)) = 1.0
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
     }
@@ -9,19 +16,28 @@
         LOD 200
 
         CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
+
+        #include "UnityPBSLighting.cginc"
+    // Physically based Standard lighting model, and enable shadows on all light types
         #pragma surface surf Standard fullforwardshadows vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
 
         sampler2D _MainTex;
+        sampler2D _MetalMap;
+        sampler2D _NormalMap;
+
         sampler2D _Map;
 
         struct Input {
             float2 uv_MainTex;
         };
 
+        half3 _EmissionColorBottom;
+        half3 _EmissionColorTop;
+
+        half _NormalMag;
         half _Glossiness;
         half _Metallic;
 
@@ -50,12 +66,20 @@
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o) {
-            // Albedo comes from a texture tinted by color
+           
             fixed4 c = UNITY_ACCESS_INSTANCED_PROP(_Color_arr, _Color);
-            o.Albedo = c.rgb;
+            float2 uv = float2(c.g, c.r);
+
+            o.Albedo = tex2D(_Map, uv) * tex2D(_MainTex, IN.uv_MainTex);
+
             // Metallic and smoothness come from slider variables
-            o.Metallic = _Metallic;
-            o.Smoothness = _Glossiness;
+           // o.Metalness = float3(1, 1, 1);
+            o.Metallic = tex2D(_MetalMap, IN.uv_MainTex).r * _Metallic;
+            o.Smoothness = tex2D(_MetalMap, IN.uv_MainTex).a * _Glossiness;
+
+            o.Normal = lerp(o.Normal, UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex)), _NormalMag);
+            o.Emission = pow(tex2D(_Map, uv).r * .4, 3.0f) * 10.0 * lerp(_EmissionColorBottom, _EmissionColorTop, 1.0);
+
             o.Alpha = c.a;
         }
         ENDCG
