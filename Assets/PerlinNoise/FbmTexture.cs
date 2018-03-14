@@ -27,6 +27,7 @@ public class FbmTexture : MonoBehaviour {
     bool clamp = false;
 
     Texture2D texture;
+    public Texture2D Texture { get { return texture; } }
 
     void Awake()
     {

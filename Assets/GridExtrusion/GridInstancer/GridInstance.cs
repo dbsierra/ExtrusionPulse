@@ -35,7 +35,7 @@ namespace OpticalRhythm.Visuals
 
         public void Init()
         {
-
+            Fill();
         }
 
         private void OnDrawGizmos()
@@ -126,7 +126,6 @@ namespace OpticalRhythm.Visuals
 
         void Start ()
         {
-            Fill();
         }
 
         void Update ()
