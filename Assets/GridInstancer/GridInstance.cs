@@ -98,7 +98,6 @@ namespace OpticalRhythm.Visuals
             {
                 for (int j = 0; j < copyAmountY; j++)
                 {
-                    Debug.Log("here");
                     GameObject clone = GameObject.Instantiate(Clone, transform);
                     clone.transform.localScale = VectorMult(new Vector3(cloneSize, cloneSize, cloneSize), CloneScale);
                     clone.transform.localPosition = new Vector3(i * cloneSize - Width / 2.0f + cloneSize / 2.0f, j * cloneSize - Height / 2.0f + cloneSize / 2.0f, 0.0f) + GetFinalOffset();
