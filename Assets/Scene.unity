@@ -1181,8 +1181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd6c3a7095097244a4c02b602ffb856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Clone: {fileID: 1107779301078570, guid: b57a386784e62fb4688e826e14e2cca0, type: 2}
-  CloneMaterial: {fileID: 2100000, guid: 360642deae46e2d479c057d4abd1c929, type: 2}
+  Clone: {fileID: 1459664430522812, guid: 3f11d97f2cb47ef448f5542823725eb6, type: 2}
+  CloneMaterial: {fileID: 2100000, guid: 2a7ba6487822b3343944257a227811ea, type: 2}
   CloneScale: {x: 1, y: 1, z: 1}
   Width: 40
   Height: 40
