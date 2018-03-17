@@ -14,7 +14,6 @@ public class FbmTexture : MonoBehaviour {
     [SerializeField]
     int size = 28;
 
-
     [SerializeField, Range(1, 5)]
     int _fractalLevel = 1;
     [SerializeField]
@@ -23,6 +22,8 @@ public class FbmTexture : MonoBehaviour {
     float frequency = 1.0f;
     [SerializeField]
     float amplitude = 1.0f;
+    [SerializeField]
+    float power = 1.0f;
     [SerializeField]
     bool clamp = false;
 
@@ -60,11 +61,14 @@ public class FbmTexture : MonoBehaviour {
                     n = Mathf.Clamp(n, 0.0f, 1.0f);
                 }
 
+                n = Mathf.Pow(n, power);
+
                 if( n < .001f)
                 {
-                    ;// Debug.Log(n);
+                    // Debug.Log(n);
                 }
-                texture.SetPixel(x, y, Color.white * (n / 1.4f + 0.5f));
+
+                texture.SetPixel(x, y, Color.white * (n / 1.4f + 0.5f) );
             }
         }
 

@@ -1,10 +1,13 @@
 ﻿Shader "Custom/GridInstanceClone" {
     Properties {
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
+        _Map("Map", 2D) = "white" {}
         _MetalMap ("Metal Map", 2D) = "white" {}
         _NormalMap("Normal Map", 2D) = "white" {}
 
+        [HDR]
         _EmissionColorBottom ("Color Bottom", Color)=(0,0,0)
+            [HDR]
         _EmissionColorTop ("Color Top", Color)=(1,1,1)
 
         _NormalMag("Normal", Range(0,1)) = 1.0
@@ -62,7 +65,9 @@
             float2 uv = UNITY_ACCESS_INSTANCED_PROP(_Color_arr, _Color).gr;
 
             // Extrude the cube based on height map
-            v.vertex.z *= tex2Dlod(_Map, float4(uv, 0, 0)).a;
+            float4 rgba = tex2Dlod(_Map, float4(uv, 0, 0));
+            v.vertex.z *= 6.0 * rgba.a;
+            //v.vertex.z *= 4.0*((rgba.r * 0.3) + (rgba.g * 0.59) + (rgba.b * 0.11));
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -78,7 +83,12 @@
             o.Smoothness = tex2D(_MetalMap, IN.uv_MainTex).a * _Glossiness;
 
             o.Normal = lerp(o.Normal, UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex)), _NormalMag);
-            o.Emission = pow(tex2D(_Map, uv).r * .4, 3.0f) * 10.0 * lerp(_EmissionColorBottom, _EmissionColorTop, 1.0);
+
+           // o.Emission = pow(tex2D(_Map, uv).a * .4, 6.0f) * lerp(_EmissionColorBottom, _EmissionColorTop, 1.0);
+
+            float v = pow(tex2D(_Map, uv).a * .4, 5.0f);
+
+            o.Emission = lerp(_EmissionColorBottom, _EmissionColorTop, v);
 
             o.Alpha = c.a;
         }

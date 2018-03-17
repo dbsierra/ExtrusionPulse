@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace OpticalRhythm.Visuals
 {
@@ -11,11 +12,20 @@ namespace OpticalRhythm.Visuals
         [SerializeField, Tooltip("Noise texture")]
         FbmTexture NoiseTexture;
 
+        public RenderTexture Movie;
+
         // Use this for initialization
         void Start()
         {
             GridInstancer.Init();
-            GridInstancer.CloneMaterial.SetTexture("_Map", NoiseTexture.Texture);
+            if(Movie != null)
+            {
+                GridInstancer.CloneMaterial.SetTexture("_Map", Movie);
+            }
+            else
+            {
+                GridInstancer.CloneMaterial.SetTexture("_Map", NoiseTexture.Texture);
+            }
         }
 
         // Update is called once per frame
