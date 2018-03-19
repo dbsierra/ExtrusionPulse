@@ -10,7 +10,7 @@ namespace OpticalRhythm.Visuals
         [SerializeField, Tooltip("The grid instancer that we will be animating")]
         GridInstance GridInstancer;
         [SerializeField, Tooltip("Noise texture")]
-        FbmTexture NoiseTexture;
+        NoisePulseTexture NoiseTexture;
 
         public RenderTexture Movie;
 

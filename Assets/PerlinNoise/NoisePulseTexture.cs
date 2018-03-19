@@ -2,15 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FbmTexture : MonoBehaviour {
+public class NoisePulseTexture : MonoBehaviour {
 
-    public enum TestTarget
-    {
-        Noise1D, Noise2D, Noise3D
-    }
-
-    [SerializeField]
-    TestTarget _target;
     [SerializeField]
     int size = 28;
 
@@ -29,6 +22,20 @@ public class FbmTexture : MonoBehaviour {
 
     Texture2D texture;
     public Texture2D Texture { get { return texture; } }
+
+    // Pulses
+    // distances and values are all in pixels
+    [Tooltip("distance to fade in pixels")]
+    public int FadeDistance = 7;
+    [Range(0,1)]
+    public float WavePos1;
+    [Range(0, 1)]
+    public float WavePos2;
+    [Range(0, 1)]
+    public float WavePos3;
+    int _WavePos1;
+    int _WavePos2;
+    int _WavePos3;
 
     void Awake()
     {
@@ -68,19 +75,45 @@ public class FbmTexture : MonoBehaviour {
                     // Debug.Log(n);
                 }
 
-                texture.SetPixel(x, y, Color.white * (n / 1.4f + 0.5f) );
+                float d1 = 0.0f;
+                float d2 = 0.0f;
+                float d3 = 0.0f;
+
+                // Pulse
+                if (x < _WavePos1)
+                {
+                    d1 = 1.0f - Mathf.Clamp( (float)(_WavePos1 - x)/(float)FadeDistance, 0.0f, 1.0f);
+                }
+                if (x < _WavePos2)
+                {
+                    d2 = 1.0f - Mathf.Clamp((float)(_WavePos2 - x) / (float)FadeDistance, 0.0f, 1.0f);
+                }
+                if (x < _WavePos3)
+                {
+                    d2 = 1.0f - Mathf.Clamp((float)(_WavePos3 - x) / (float)FadeDistance, 0.0f, 1.0f);
+                }
+
+                Color finalC = Color.white * n * (d1+d2+d3);
+
+                texture.SetPixel(x, y, finalC);
             }
         }
 
         texture.Apply();
     }
 
+    public void Pulse()
+    {
+        ;
+    }
+
     void Update () {
-        if (_target == TestTarget.Noise1D)
-            UpdateTexture((x, y, t) => Perlin.Noise(x + t));
-        else if (_target == TestTarget.Noise2D)
-            UpdateTexture((x, y, t) => Perlin.Noise(x + t, y));
-        else
-            UpdateTexture((x, y, t) => Perlin.Noise(x, y, t));
+
+        _WavePos1 = (int)Mathf.Clamp( Mathf.Floor(WavePos1*(size+FadeDistance)), 0, size + FadeDistance);
+        _WavePos2 = (int)Mathf.Clamp(Mathf.Floor(WavePos2 * (size + FadeDistance)), 0, size + FadeDistance);
+        _WavePos3 = (int)Mathf.Clamp(Mathf.Floor(WavePos3 * (size + FadeDistance)), 0, size + FadeDistance);
+
+        UpdateTexture((x, y, t) => Perlin.Noise(x, y, t));
+
     }
 }

@@ -13,6 +13,8 @@
         _NormalMag("Normal", Range(0,1)) = 1.0
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+
+        _HeightMult("Height Multiplier", Range(0,1)) = 1.0
     }
     SubShader {
         Tags { "RenderType"="Opaque" }
@@ -43,6 +45,7 @@
         half _NormalMag;
         half _Glossiness;
         half _Metallic;
+        half _HeightMult;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -66,8 +69,8 @@
 
             // Extrude the cube based on height map
             float4 rgba = tex2Dlod(_Map, float4(uv, 0, 0));
-            v.vertex.z *= 6.0 * rgba.a;
-            //v.vertex.z *= 4.0*((rgba.r * 0.3) + (rgba.g * 0.59) + (rgba.b * 0.11));
+          //  v.vertex.z *= 6.0 * rgba.a * _HeightMult;
+            v.vertex.z *= 4.0*((rgba.r * 0.3) + (rgba.g * 0.59) + (rgba.b * 0.11));
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o) {
