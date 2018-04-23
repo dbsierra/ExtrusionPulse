@@ -58,17 +58,22 @@
 #define _Row_arr Props
             UNITY_DEFINE_INSTANCED_PROP(float, _Col)
 #define _Col_arr Props
+            UNITY_DEFINE_INSTANCED_PROP(float2, _Uv)
+#define _Uv_arr Props
             //     UNITY_INSTANCING_CBUFFER_END(Props)
             UNITY_INSTANCING_BUFFER_END(Props)
 
         void vert(inout appdata_full v) 
         {
+            // The uv of the texture that this cube maps to
             // Green = col (u) 0-1 
             // Red = row (v) 0-1
             float2 uv = UNITY_ACCESS_INSTANCED_PROP(_Color_arr, _Color).gr;
+            uv = UNITY_ACCESS_INSTANCED_PROP(_Uv_arr, _Uv).rg;
 
-            // Extrude the cube based on height map
+            // Extrude the cube based on the luminance of the height map
             float4 rgba = tex2Dlod(_Map, float4(uv, 0, 0));
+
           //  v.vertex.z *= 6.0 * rgba.a * _HeightMult;
             v.vertex.z *= 4.0*((rgba.r * 0.3) + (rgba.g * 0.59) + (rgba.b * 0.11));
         }
@@ -77,6 +82,7 @@
            
             fixed4 c = UNITY_ACCESS_INSTANCED_PROP(_Color_arr, _Color);
             float2 uv = float2(c.g, c.r);
+            uv = UNITY_ACCESS_INSTANCED_PROP(_Uv_arr, _Uv).rg;
 
             o.Albedo = tex2D(_Map, uv) * tex2D(_MainTex, IN.uv_MainTex);
 

@@ -93,7 +93,7 @@ public class NoisePulseTexture : MonoBehaviour {
                     d2 = 1.0f - Mathf.Clamp((float)(_WavePos3 - x) / (float)FadeDistance, 0.0f, 1.0f);
                 }
 
-                Color finalC = Color.white * n * (d1+d2+d3);
+                Color finalC = Color.white * n;// * (d1+d2+d3);
 
                 texture.SetPixel(x, y, finalC);
             }
@@ -109,7 +109,7 @@ public class NoisePulseTexture : MonoBehaviour {
 
     void Update () {
 
-        _WavePos1 = (int)Mathf.Clamp( Mathf.Floor(WavePos1*(size+FadeDistance)), 0, size + FadeDistance);
+        _WavePos1 = (int)Mathf.Clamp(Mathf.Floor(WavePos1*(size+FadeDistance)), 0, size + FadeDistance);
         _WavePos2 = (int)Mathf.Clamp(Mathf.Floor(WavePos2 * (size + FadeDistance)), 0, size + FadeDistance);
         _WavePos3 = (int)Mathf.Clamp(Mathf.Floor(WavePos3 * (size + FadeDistance)), 0, size + FadeDistance);
 
