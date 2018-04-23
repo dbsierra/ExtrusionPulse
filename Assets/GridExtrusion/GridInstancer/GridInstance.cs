@@ -48,8 +48,7 @@ namespace OpticalRhythm.Visuals
             Matrix4x4 offset = Matrix4x4.Translate(GetFinalOffset());
             Gizmos.matrix = t * r * offset;
 
-            Gizmos.DrawWireCube(Vector3.zero, new Vector3(Width, Height, 0.01f));
-            
+            Gizmos.DrawWireCube(Vector3.zero, new Vector3(Width, Height, 0.01f));          
         }
 
         private Vector3 GetFinalOffset()

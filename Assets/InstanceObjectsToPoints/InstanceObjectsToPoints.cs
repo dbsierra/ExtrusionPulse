@@ -12,6 +12,8 @@ public class InstanceObjectsToPoints : MonoBehaviour {
     private Mesh m_templateMesh;
     [SerializeField]
     private Vector3 m_templateScale = Vector3.one;
+    [SerializeField]
+    private bool m_visualizeTemplate = true;
 
     [Header("Cloner")]
     [SerializeField]
@@ -43,12 +45,24 @@ public class InstanceObjectsToPoints : MonoBehaviour {
         return n;
     }
 
+    private void OnDrawGizmos()
+    {
+        if(m_visualizeTemplate && m_templateMesh != null)
+        {
+           Gizmos.color = Color.cyan;
+           Gizmos.DrawWireMesh(m_templateMesh, transform.position, transform.rotation, m_templateScale);
+        }
+    }
+
     void Start ()
     {
+        GenerateClones();
+    }
+    
+    public void GenerateClones()
+    {
         m_alignDirection = Vector3.Normalize(m_alignDirection);
-
         Dictionary<Vector3, int> m_positionIndexMap = new Dictionary<Vector3, int>();
-
         if (m_templateMesh != null)
         {
             m_points = m_templateMesh.vertices;
@@ -57,7 +71,7 @@ public class InstanceObjectsToPoints : MonoBehaviour {
             for (int i = 0; i < m_points.Length; i++)
             {
                 // Avoid cloning objects in duplicate positions (for example when your template is a mesh without shared verticies)
-                if(m_positionIndexMap.ContainsKey(m_points[i]))
+                if (m_positionIndexMap.ContainsKey(m_points[i]))
                 {
                     continue;
                 }
@@ -70,14 +84,14 @@ public class InstanceObjectsToPoints : MonoBehaviour {
                 clone.transform.localScale = VectorMult(clone.transform.localScale, m_clonerScale);
                 clone.transform.localPosition = VectorMult(m_points[i], m_templateScale);
 
-                if(m_normals != null && m_alignToNormal)
+                if (m_normals != null && m_alignToNormal)
                 {
                     clone.transform.localRotation = Quaternion.FromToRotation(m_alignDirection, m_normals[i]);
                 }
 
                 // Set vertex attributes on to material
                 MaterialPropertyBlock prop = new MaterialPropertyBlock();
-                if(m_uvAttribute != "" && m_uvAttribute != null)
+                if (m_uvAttribute != "" && m_uvAttribute != null)
                 {
                     prop.SetVector(m_uvAttribute, m_templateMesh.uv[i]);
                 }
@@ -90,18 +104,18 @@ public class InstanceObjectsToPoints : MonoBehaviour {
                     prop.SetVector(m_positionAttribute, m_points[i]);
                 }
 
-                if(clone.GetComponent<MeshRenderer>() != null)
+                if (clone.GetComponent<MeshRenderer>() != null)
                 {
                     clone.GetComponent<MeshRenderer>().SetPropertyBlock(prop);
                 }
-                else if(clone.GetComponentInChildren<MeshRenderer>() != null )
+                else if (clone.GetComponentInChildren<MeshRenderer>() != null)
                 {
                     clone.GetComponentInChildren<MeshRenderer>().SetPropertyBlock(prop);
-                }              
+                }
             }
         }
     }
-    
+
     void Update ()
     {
         
